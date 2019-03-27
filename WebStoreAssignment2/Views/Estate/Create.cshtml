@@ -17,10 +17,15 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Type, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
-            </div>
+            <select class="form-control" id="Type" name="Type">
+                <option value="">- Please select the type of rent -</option>
+                <option value="Room Rental">Room Rental</option>
+                <option value="House Rental">House Rental</option>
+                <option value="Apartment Rental">Apartment Rental</option>
+                <option value="Floor Rental">Floor Rental</option>
+                <option value="Basement Rental">Basement Rental</option>
+                <option value="Other">Other</option>
+            </select>
         </div>
 
         <div class="form-group">
