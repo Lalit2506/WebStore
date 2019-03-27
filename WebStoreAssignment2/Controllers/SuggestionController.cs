@@ -17,7 +17,28 @@ namespace WebStoreAssignment2.Controllers
         // GET: Suggestion
         public ActionResult Index()
         {
-            return View(db.Suggestions.ToList());
+            SuggestionList p1 = new SuggestionList();
+            p1. Suggestion = (db.Suggestions.ToList());
+
+            return View(p1);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index([Bind(Include = "SuggestionID, Name, Comment")] Suggestion newPerson)
+        {
+            ModelState.Clear();
+            SuggestionList pl = new SuggestionList();
+            pl.newPerson = new Suggestion { Name = "", Comment = "" };
+            if (!CreateSuggestion(newPerson))
+            {
+                pl.newPerson = newPerson;
+            }
+
+            pl.Suggestion = db.Suggestions.ToList();
+
+
+            return PartialView(pl);
         }
 
         // GET: Suggestion/Details/5
@@ -48,14 +69,21 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "SuggestionID,Name,Comment")] Suggestion suggestion)
         {
+            if (CreateSuggestion(suggestion))
+                return RedirectToAction("Index");
+
+            return View(suggestion);
+        }
+
+        private bool CreateSuggestion(Suggestion suggestion)
+        {
             if (ModelState.IsValid)
             {
                 db.Suggestions.Add(suggestion);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return true;
             }
-
-            return View(suggestion);
+            return false;
         }
 
         // GET: Suggestion/Edit/5
