@@ -50,7 +50,10 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.electronicPicture)
+            @if (item.electronicPicture != null)
+            {
+                <img src="~/Content/Images/@item.electronicPicture " class="thumb" />
+            }
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Electronicsid }) |

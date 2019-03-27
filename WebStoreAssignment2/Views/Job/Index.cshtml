@@ -56,7 +56,10 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CompanyPicture)
+            @if (item.CompanyPicture != null)
+            {
+                <img src="~/Content/Images/@item.CompanyPicture " class="thumb" />
+            }
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Jobsid }) |

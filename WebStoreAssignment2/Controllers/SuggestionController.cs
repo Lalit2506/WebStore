@@ -10,6 +10,7 @@ using WebStoreAssignment2.Models;
 
 namespace WebStoreAssignment2.Controllers
 {
+    [RequireHttps]
     public class SuggestionController : Controller
     {
         private AdsContext db = new AdsContext();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -10,6 +11,7 @@ using WebStoreAssignment2.Models;
 
 namespace WebStoreAssignment2.Controllers
 {
+    [RequireHttps]
     public class ElectronicController : Controller
     {
         private AdsContext db = new AdsContext();
@@ -46,10 +48,29 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Electronicsid,Type,Model,Brand,price,Description,electronicPicture")] Electronics electronics)
+        public ActionResult Create([Bind(Include = "Electronicsid,Type,Model,Brand,price,Description,electronicPicture")] Electronics electronics, String Picture)
         {
             if (ModelState.IsValid)
             {
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // remove path from Edge uploads
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        electronics.electronicPicture = fName;
+                    }
+                }
+                else
+                {
+                    // no new photo, keep the old file name
+                    electronics.electronicPicture = Picture;
+                }
                 db.Electronics.Add(electronics);
                 db.SaveChanges();
                 return RedirectToAction("Index");

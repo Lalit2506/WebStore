@@ -13,6 +13,7 @@ using WebStoreAssignment2.Models;
 namespace WebStoreAssignment2.Controllers
 {
     [Authorize]
+    [RequireHttps]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;

@@ -56,7 +56,10 @@
             @Html.DisplayFor(modelItem => item.Condition)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CarPhoto)
+            @if (item.CarPhoto != null)
+            {
+                <img src="~/Content/Images/@item.CarPhoto " class="thumb" />
+            }
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Carid }) |

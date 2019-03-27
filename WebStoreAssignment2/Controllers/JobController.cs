@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -10,6 +11,7 @@ using WebStoreAssignment2.Models;
 
 namespace WebStoreAssignment2.Controllers
 {
+    [RequireHttps]
     public class JobController : Controller
     {
         private AdsContext db = new AdsContext();
@@ -46,10 +48,29 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Jobsid,Jobtype,Salary,Company,Hours,location,Description,CompanyPicture")] Jobs jobs)
+        public ActionResult Create([Bind(Include = "Jobsid,Jobtype,Salary,Company,Hours,location,Description,CompanyPicture")] Jobs jobs, String Picture)
         {
             if (ModelState.IsValid)
             {
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // remove path from Edge uploads
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        jobs.CompanyPicture = fName;
+                    }
+                }
+                else
+                {
+                    // no new photo, keep the old file name
+                    jobs.CompanyPicture = Picture;
+                }
                 db.Jobs.Add(jobs);
                 db.SaveChanges();
                 return RedirectToAction("Index");
