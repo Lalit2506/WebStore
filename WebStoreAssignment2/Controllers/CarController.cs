@@ -23,6 +23,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Car/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -38,6 +39,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Car/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -58,7 +60,7 @@ namespace WebStoreAssignment2.Controllers
 
                     if (file.FileName != null && file.ContentLength > 0)
                     {
-                        // remove path from Edge uploads
+                        // This is to remove the path of the photo from edge
                         string fName = Path.GetFileName(file.FileName);
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
@@ -68,7 +70,7 @@ namespace WebStoreAssignment2.Controllers
                 }
                 else
                 {
-                    // no new photo, keep the old file name
+                    // This is to keep the old file if there is no new photo
                     car.CarPhoto = Photo;
                 }
                 db.Cars.Add(car);
@@ -80,6 +82,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Car/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -99,10 +102,29 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Carid,Cartype,Model,year,Make,Price,Condition,CarPhoto")] Car car)
+        public ActionResult Edit([Bind(Include = "Carid,Cartype,Model,year,Make,Price,Condition,CarPhoto")] Car car, String Photo)
         {
             if (ModelState.IsValid)
             {
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // This is to remove the path of the photo from edge
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        car.CarPhoto = fName;
+                    }
+                }
+                else
+                {
+                    // This is to keep the old file if there is no new photo
+                    car.CarPhoto = Photo;
+                }
                 db.Entry(car).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -111,6 +133,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Car/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -143,6 +166,11 @@ namespace WebStoreAssignment2.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        public ActionResult Buy(int id)
+        {
+            var car = (from a in db.Cars where a.Carid == id select a).SingleOrDefault();
+            return View(car);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace WebStoreAssignment2.Controllers
             return View(db.Jobs.ToList());
         }
 
+        [Authorize]
         // GET: Job/Details/5
         public ActionResult Details(int? id)
         {
@@ -38,6 +39,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Job/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -58,7 +60,7 @@ namespace WebStoreAssignment2.Controllers
 
                     if (file.FileName != null && file.ContentLength > 0)
                     {
-                        // remove path from Edge uploads
+                        // This is to remove the path of the photo from edge
                         string fName = Path.GetFileName(file.FileName);
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
@@ -68,7 +70,7 @@ namespace WebStoreAssignment2.Controllers
                 }
                 else
                 {
-                    // no new photo, keep the old file name
+                    // This is to keep the old file if there is no new photo
                     jobs.CompanyPicture = Picture;
                 }
                 db.Jobs.Add(jobs);
@@ -80,6 +82,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Job/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -99,11 +102,31 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Jobsid,Jobtype,Salary,Company,Hours,location,Description,CompanyPicture")] Jobs jobs)
+        public ActionResult Edit([Bind(Include = "Jobsid,Jobtype,Salary,Company,Hours,location,Description,CompanyPicture")] Jobs jobs, String Picture)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(jobs).State = EntityState.Modified;
+             
+                    if (Request.Files != null)
+                    {
+                        var file = Request.Files[0];
+
+                        if (file.FileName != null && file.ContentLength > 0)
+                        {
+                        // This is to remove the path of the photo from edge
+                        string fName = Path.GetFileName(file.FileName);
+
+                            string path = Server.MapPath("~/Content/Images/" + fName);
+                            file.SaveAs(path);
+                            jobs.CompanyPicture = fName;
+                        }
+                    }
+                    else
+                    {
+                    // This is to keep the old file if there is no new photo
+                    jobs.CompanyPicture = Picture;
+                    }
+                    db.Entry(jobs).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -111,6 +134,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Job/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)

@@ -280,6 +280,8 @@
     <Content Include="Views\Suggestion\Details.cshtml" />
     <Content Include="Views\Suggestion\Edit.cshtml" />
     <Content Include="Views\Suggestion\Index.cshtml" />
+    <Content Include="Views\Car\Buy.cshtml" />
+    <Content Include="Views\Electronic\Buy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

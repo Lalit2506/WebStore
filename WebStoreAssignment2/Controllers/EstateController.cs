@@ -11,7 +11,6 @@ using WebStoreAssignment2.Models;
 
 namespace WebStoreAssignment2.Controllers
 {
-
     [RequireHttps]
     public class EstateController : Controller
     {
@@ -24,6 +23,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Estate/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -39,6 +39,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Estate/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -59,7 +60,7 @@ namespace WebStoreAssignment2.Controllers
 
                     if (file.FileName != null && file.ContentLength > 0)
                     {
-                        // remove path from Edge uploads
+                        // This is to remove the path of the photo from edge
                         string fName = Path.GetFileName(file.FileName);
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
@@ -69,7 +70,7 @@ namespace WebStoreAssignment2.Controllers
                 }
                 else
                 {
-                    // no new photo, keep the old file name
+                    // This is to keep the old file if there is no new photo
                     estate.EstatePhoto = CurrentPhoto;
                 }
                 db.Estates.Add(estate);
@@ -81,6 +82,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Estate/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -100,10 +102,29 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EstateID,Type,Address,Price,location,Description,EstatePhoto")] Estate estate)
+        public ActionResult Edit([Bind(Include = "EstateID,Type,Address,Price,location,Description,EstatePhoto")] Estate estate, String CurrentPhoto)
         {
             if (ModelState.IsValid)
             {
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // This is to remove the path of the photo from edge
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        estate.EstatePhoto = fName;
+                    }
+                }
+                else
+                {
+                    // This is to keep the old file if there is no new photo
+                    estate.EstatePhoto = CurrentPhoto;
+                }
                 db.Entry(estate).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -112,6 +133,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Estate/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)

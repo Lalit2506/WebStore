@@ -41,7 +41,7 @@ namespace WebStoreAssignment2.Models
 
         // This is to enter the picture of the company
         [Required]
-        [DisplayName("Company Picture")]
+        [DisplayName("Company Logo")]
         public virtual String CompanyPicture { get; set; }
     }
 }

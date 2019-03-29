@@ -23,6 +23,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Electronic/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -38,6 +39,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Electronic/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -58,7 +60,7 @@ namespace WebStoreAssignment2.Controllers
 
                     if (file.FileName != null && file.ContentLength > 0)
                     {
-                        // remove path from Edge uploads
+                        // This is to remove the path of the photo from edge
                         string fName = Path.GetFileName(file.FileName);
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
@@ -68,7 +70,7 @@ namespace WebStoreAssignment2.Controllers
                 }
                 else
                 {
-                    // no new photo, keep the old file name
+                    // This is to keep the old file if there is no new photo
                     electronics.electronicPicture = Picture;
                 }
                 db.Electronics.Add(electronics);
@@ -80,6 +82,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Electronic/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -99,10 +102,29 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Electronicsid,Type,Model,Brand,price,Description,electronicPicture")] Electronics electronics)
+        public ActionResult Edit([Bind(Include = "Electronicsid,Type,Model,Brand,price,Description,electronicPicture")] Electronics electronics, String Picture)
         {
             if (ModelState.IsValid)
             {
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // This is to remove the path of the photo from edge
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        electronics.electronicPicture = fName;
+                    }
+                }
+                else
+                {
+                    // This is to keep the old file if there is no new photo
+                    electronics.electronicPicture = Picture;
+                }
                 db.Entry(electronics).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -111,6 +133,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Electronic/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -143,6 +166,12 @@ namespace WebStoreAssignment2.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        [Authorize]
+        public ActionResult Buy(int id)
+        {
+            var elec = (from a in db.Electronics where a.Electronicsid == id select a).SingleOrDefault();
+            return View(elec);
         }
     }
 }
