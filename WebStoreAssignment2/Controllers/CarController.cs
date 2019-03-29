@@ -14,8 +14,8 @@ namespace WebStoreAssignment2.Controllers
     [RequireHttps]
     public class CarController : Controller
     {
-        private AdsContext db = new AdsContext();
 
+        private AdsContext db = new AdsContext();
         // GET: Car
         public ActionResult Index()
         {
