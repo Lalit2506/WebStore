@@ -38,6 +38,8 @@ namespace WebStoreAssignment2.Models
         // This is to enter the price of car which the owner wants for selling the car
         [Required]
         [DisplayName("Car Price")]
+        [Range(1, 10000000000000000000)]
+        [DataType(DataType.Currency)]
         public virtual Double Price { get; set; }
 
         // This field is to describe the condition of car

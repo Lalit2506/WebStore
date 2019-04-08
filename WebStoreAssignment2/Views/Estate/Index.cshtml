@@ -56,9 +56,19 @@
             }
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.EstateID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.EstateID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.EstateID })
+            @if (Request.IsAuthenticated)
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = item.EstateID })
+                <b>|</b>
+            }
+
+            @Html.ActionLink("Details", "Details", new { id = item.EstateID })
+
+            @if (Request.IsAuthenticated)
+            {
+                <b>|</b>
+                @Html.ActionLink("Delete", "Delete", new { id = item.EstateID })
+            }
         </td>
     </tr>
 }

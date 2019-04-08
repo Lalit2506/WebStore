@@ -11,38 +11,46 @@ using WebStoreAssignment2.Models;
 
 namespace WebStoreAssignment2.Controllers
 {
+   
     [RequireHttps]
     public class EstateController : Controller
     {
-        private AdsContext db = new AdsContext();
+        IMockEstate db;
 
+
+
+        public EstateController(IMockEstate mockDb)
+        {
+            this.db = mockDb;
+        }
+
+        [Route("Estate/See")]
         // GET: Estate
         public ActionResult Index()
         {
-            return View(db.Estates.ToList());
+            return View("Index", db.estates.OrderBy(c => c.EstateID).ToList());
         }
 
         // GET: Estate/Details/5
-        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Estate estate = db.Estates.Find(id);
+            Estate estate = db.estates.SingleOrDefault(c => c.EstateID == id);
             if (estate == null)
             {
                 return HttpNotFound();
             }
-            return View(estate);
+            return View("Details", estate);
         }
 
         // GET: Estate/Create
         [Authorize]
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: Estate/Create
@@ -73,8 +81,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     estate.EstatePhoto = CurrentPhoto;
                 }
-                db.Estates.Add(estate);
-                db.SaveChanges();
+                db.Save(estate);
                 return RedirectToAction("Index");
             }
 
@@ -89,12 +96,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Estate estate = db.Estates.Find(id);
+            Estate estate = db.estates.SingleOrDefault(c => c.EstateID == id);
             if (estate == null)
             {
                 return HttpNotFound();
             }
-            return View(estate);
+            return View("Edit", estate);
         }
 
         // POST: Estate/Edit/5
@@ -125,8 +132,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     estate.EstatePhoto = CurrentPhoto;
                 }
-                db.Entry(estate).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Save(estate);
                 return RedirectToAction("Index");
             }
             return View(estate);
@@ -140,7 +146,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Estate estate = db.Estates.Find(id);
+            Estate estate = db.estates.SingleOrDefault(c => c.EstateID == id);
             if (estate == null)
             {
                 return HttpNotFound();
@@ -153,9 +159,8 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Estate estate = db.Estates.Find(id);
-            db.Estates.Remove(estate);
-            db.SaveChanges();
+            Estate estate = db.estates.SingleOrDefault(c => c.EstateID == id);
+            db.Delete(estate);
             return RedirectToAction("Index");
         }
 

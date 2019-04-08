@@ -56,9 +56,19 @@
             }
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Electronicsid }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Electronicsid }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Electronicsid })
+            @if (Request.IsAuthenticated)
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = item.Electronicsid })
+                <b>|</b>
+            }
+
+            @Html.ActionLink("Details", "Details", new { id = item.Electronicsid })
+
+            @if (Request.IsAuthenticated)
+            {
+                <b>|</b>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Electronicsid })
+            }
         </td>
     </tr>
 }

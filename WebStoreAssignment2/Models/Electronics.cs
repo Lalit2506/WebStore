@@ -31,6 +31,8 @@ namespace WebStoreAssignment2.Models
         // Price for which the owner wants to sell the product.
         [Required]
         [DisplayName("Electronic Price")]
+        [Range(1, 10000000000000000000)]
+        [DataType(DataType.Currency)]
         public virtual Double price { get; set; }
 
         // This is to enter the condition of the product

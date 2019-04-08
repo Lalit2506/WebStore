@@ -19,6 +19,8 @@ namespace WebStoreAssignment2.Models
 
         // This is to enter the salary you will get for working 
         [Required]
+        [Range(1, 10000000000000000000)]
+        [DataType(DataType.Currency)]
         public virtual double Salary { get; set; }
 
         // This is to enter the name of Company
@@ -28,6 +30,8 @@ namespace WebStoreAssignment2.Models
         // This is to enter the number of hours 
         [Required]
         [DisplayName("Number of hours")]
+        [DisplayFormat(DataFormatString ="{0:n1}")]
+        [Range(1,60)]
         public virtual Double Hours { get; set; }
 
         // This is to enter the city in which company is situated

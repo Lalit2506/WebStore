@@ -62,9 +62,19 @@
             }
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Jobsid }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Jobsid }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Jobsid })
+            @if (Request.IsAuthenticated)
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = item.Jobsid })
+                <b>|</b>
+            }
+
+            @Html.ActionLink("Details", "Details", new { id = item.Jobsid }) 
+
+            @if (Request.IsAuthenticated)
+            {
+                <b>|</b>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Jobsid })
+            }
         </td>
     </tr>
 }

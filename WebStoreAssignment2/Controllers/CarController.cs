@@ -17,13 +17,13 @@ namespace WebStoreAssignment2.Controllers
 
         private AdsContext db = new AdsContext();
         // GET: Car
+
         public ActionResult Index()
         {
             return View(db.Cars.ToList());
         }
 
         // GET: Car/Details/5
-        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -40,6 +40,7 @@ namespace WebStoreAssignment2.Controllers
 
         // GET: Car/Create
         [Authorize]
+        [Route("Car/Create")]
         public ActionResult Create()
         {
             return View();
@@ -167,6 +168,7 @@ namespace WebStoreAssignment2.Controllers
             }
             base.Dispose(disposing);
         }
+        [Authorize]
         public ActionResult Buy(int id)
         {
             var car = (from a in db.Cars where a.Carid == id select a).SingleOrDefault();

@@ -23,7 +23,6 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Electronic/Details/5
-        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)

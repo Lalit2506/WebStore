@@ -10,7 +10,6 @@ using WebStoreAssignment2.Models;
 
 namespace WebStoreAssignment2.Controllers
 {
-    [Authorize]
     [RequireHttps]
     public class SuggestionController : Controller
     {
@@ -29,18 +28,27 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "SuggestionID, Name, Comment")] Suggestion newPerson)
         {
-            ModelState.Clear();
-            SuggestionList pl = new SuggestionList();
-            pl.newPerson = new Suggestion { Name = "", Comment = "" };
-            if (!CreateSuggestion(newPerson))
+            SuggestionList vm;
+            if (ModelState.IsValid)
             {
-                pl.newPerson = newPerson;
+
+                db.Suggestions.Add(newPerson);
+                db.SaveChanges();
+                ModelState.Clear();
+                vm = new SuggestionList()
+                {
+                    Suggestion = db.Suggestions.ToList(),
+                };
+                return PartialView("Index", vm);
             }
 
-            pl.Suggestion = db.Suggestions.ToList();
+            vm = new SuggestionList()
+            {
+                Suggestion = db.Suggestions.ToList(),
+                newPerson = newPerson
+            };
+            return PartialView("Index", vm);
 
-
-            return PartialView(pl);
         }
 
         // GET: Suggestion/Details/5
@@ -71,24 +79,18 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "SuggestionID,Name,Comment")] Suggestion suggestion)
         {
-            if (CreateSuggestion(suggestion))
-                return RedirectToAction("Index");
-
-            return View(suggestion);
-        }
-
-        private bool CreateSuggestion(Suggestion suggestion)
-        {
             if (ModelState.IsValid)
             {
                 db.Suggestions.Add(suggestion);
                 db.SaveChanges();
-                return true;
+                return RedirectToAction("Index");
             }
-            return false;
+
+            return View(suggestion);
         }
 
         // GET: Suggestion/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -120,6 +122,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Suggestion/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)

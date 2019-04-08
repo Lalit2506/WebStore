@@ -23,6 +23,8 @@ namespace WebStoreAssignment2.Models
 
         // This is the price for selling or renting
         [Required]
+        [Range(1, 10000000000000000000)]
+        [DataType(DataType.Currency)]
         public virtual Double Price { get; set; }
 
         // This is to enter the city 

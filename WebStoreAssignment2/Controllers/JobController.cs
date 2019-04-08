@@ -14,15 +14,24 @@ namespace WebStoreAssignment2.Controllers
     [RequireHttps]
     public class JobController : Controller
     {
-        private AdsContext db = new AdsContext();
+        IMockJobs db;
+
+        public JobController()
+        {
+            this.db = new IDataJobs();
+        }
+
+        public JobController(IMockJobs mockDb)
+        {
+            this.db = mockDb;
+        }
 
         // GET: Job
         public ActionResult Index()
         {
-            return View(db.Jobs.ToList());
+            return View("Index", db.jobs.OrderBy(c => c.Jobsid).ToList());
         }
 
-        [Authorize]
         // GET: Job/Details/5
         public ActionResult Details(int? id)
         {
@@ -30,7 +39,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Jobs jobs = db.Jobs.Find(id);
+            Jobs jobs = db.jobs.SingleOrDefault(c => c.Jobsid == id);
             if (jobs == null)
             {
                 return HttpNotFound();
@@ -73,8 +82,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     jobs.CompanyPicture = Picture;
                 }
-                db.Jobs.Add(jobs);
-                db.SaveChanges();
+                db.Save(jobs);
                 return RedirectToAction("Index");
             }
 
@@ -89,7 +97,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Jobs jobs = db.Jobs.Find(id);
+            Jobs jobs = db.jobs.SingleOrDefault(c => c.Jobsid == id);
             if (jobs == null)
             {
                 return HttpNotFound();
@@ -126,8 +134,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     jobs.CompanyPicture = Picture;
                     }
-                    db.Entry(jobs).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Save(jobs);
                 return RedirectToAction("Index");
             }
             return View(jobs);
@@ -141,7 +148,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Jobs jobs = db.Jobs.Find(id);
+            Jobs jobs = db.jobs.SingleOrDefault(c => c.Jobsid == id);
             if (jobs == null)
             {
                 return HttpNotFound();
@@ -154,9 +161,8 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Jobs jobs = db.Jobs.Find(id);
-            db.Jobs.Remove(jobs);
-            db.SaveChanges();
+            Jobs jobs = db.jobs.SingleOrDefault(c => c.Jobsid == id);
+            db.Delete(jobs);
             return RedirectToAction("Index");
         }
 
@@ -167,6 +173,12 @@ namespace WebStoreAssignment2.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        [Authorize]
+        public ActionResult Apply(int id)
+        {
+            var job = (from a in db.jobs where a.Jobsid == id select a).SingleOrDefault();
+            return View(job);
         }
     }
 }
