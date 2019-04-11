@@ -23,6 +23,7 @@ namespace WebStoreAssignment2.Controllers
         }
 
         // GET: Electronic/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -72,7 +73,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     electronics.electronicPicture = Picture;
                 }
-                db.Electronics.Add(electronics);
+                //db.Electronics.Add(electronics);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
