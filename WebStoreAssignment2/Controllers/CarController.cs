@@ -14,6 +14,7 @@ namespace WebStoreAssignment2.Controllers
     [RequireHttps]
     public class CarController : Controller
     {
+        IMockCars db;
 
         IMockCar db;
 
@@ -27,7 +28,6 @@ namespace WebStoreAssignment2.Controllers
             this.db = mockDb;
         }
         // GET: Car
-
         public ActionResult Index()
         {
             return View("Index", db.cars.OrderBy(c => c.Carid).ToList());
@@ -45,7 +45,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return HttpNotFound();
             }
-            return View(car);
+            return View(cars);
         }
 
         // GET: Car/Create
@@ -60,7 +60,7 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Carid,Cartype,Model,year,Make,Price,Condition,CarPhoto")] Car car, String Photo)
+        public ActionResult Create([Bind(Include = "Carid,Cartype,Model,year,Make,Price,Condition,CarPhoto")] Car cars, String Picture)
         {
             if (ModelState.IsValid)
             {
@@ -75,19 +75,19 @@ namespace WebStoreAssignment2.Controllers
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
                         file.SaveAs(path);
-                        car.CarPhoto = fName;
+                        cars.CarPhoto= fName;
                     }
                 }
                 else
                 {
                     // This is to keep the old file if there is no new photo
-                    car.CarPhoto = Photo;
+                    cars.CarPhoto = Picture;
                 }
                 db.Save(car);
                 return RedirectToAction("Index");
             }
 
-            return View(car);
+            return View(cars);
         }
 
         // GET: Car/Edit/5
@@ -111,10 +111,11 @@ namespace WebStoreAssignment2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Carid,Cartype,Model,year,Make,Price,Condition,CarPhoto")] Car car, String Photo)
+        public ActionResult Edit([Bind(Include = "Carid,Cartype,Model,year,Price,Condition, CarPhoto")] Car cars, String Picture)
         {
             if (ModelState.IsValid)
             {
+
                 if (Request.Files != null)
                 {
                     var file = Request.Files[0];
@@ -126,18 +127,18 @@ namespace WebStoreAssignment2.Controllers
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
                         file.SaveAs(path);
-                        car.CarPhoto = fName;
+                        cars.CarPhoto = fName;
                     }
                 }
                 else
                 {
                     // This is to keep the old file if there is no new photo
-                    car.CarPhoto = Photo;
+                    cars.CarPhoto = Picture;
                 }
                 db.Save(car);
                 return RedirectToAction("Index");
             }
-            return View(car);
+            return View(cars);
         }
 
         // GET: Car/Delete/5
