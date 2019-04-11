@@ -44,14 +44,14 @@ namespace WebStoreAssignment2.Controllers
             {
                 return HttpNotFound();
             }
-            return View(jobs);
+            return View("Details",jobs);
         }
 
         // GET: Job/Create
         [Authorize]
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: Job/Create
@@ -102,7 +102,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return HttpNotFound();
             }
-            return View(jobs);
+            return View("Edit", jobs);
         }
 
         // POST: Job/Edit/5
@@ -153,7 +153,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return HttpNotFound();
             }
-            return View(jobs);
+            return View("Delete" ,jobs);
         }
 
         // POST: Job/Delete/5
@@ -175,10 +175,10 @@ namespace WebStoreAssignment2.Controllers
             base.Dispose(disposing);
         }
         [Authorize]
-        public ActionResult Apply(int id)
+        public ActionResult Apply(int? id)
         {
             var job = (from a in db.jobs where a.Jobsid == id select a).SingleOrDefault();
-            return View(job);
+            return View("Apply" ,job);
         }
     }
 }

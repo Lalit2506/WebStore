@@ -101,8 +101,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CarControllerTest.cs" />
+    <Compile Include="Controllers\ElectronicControllerTest.cs" />
     <Compile Include="Controllers\EstateControlleTest.cs" />
     <Compile Include="Controllers\JobsControllerTest.cs" />
+    <Compile Include="Controllers\SuggestionControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>

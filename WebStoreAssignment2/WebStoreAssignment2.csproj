@@ -257,15 +257,22 @@
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\Electronics.cs" />
     <Compile Include="Models\Estate.cs" />
+    <Compile Include="Models\IDataCar.cs" />
+    <Compile Include="Models\IDataElectronic.cs" />
     <Compile Include="Models\IDataEstate.cs" />
     <Compile Include="Models\IDataJobs.cs" />
+    <Compile Include="Models\IDataSuggestion.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\IMockCar.cs" />
+    <Compile Include="Models\IMockElectronic.cs" />
     <Compile Include="Models\IMockEstate.cs" />
     <Compile Include="Models\IMockJobs.cs" />
+    <Compile Include="Models\IMockSuggestion.cs" />
     <Compile Include="Models\Jobs.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Suggestion.cs" />
     <Compile Include="Models\SuggestionList.cs" />
+    <Compile Include="Models\WebStoreAssignment2Context.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -274,12 +281,21 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\2016-bugatti-vision-gran-turismo-on.jpg" />
+    <Content Include="Content\Images\Car.jpg" />
+    <Content Include="Content\Images\Electronic.png" />
+    <Content Include="Content\Images\Estate.jpg" />
+    <Content Include="Content\Images\feedback.jpg" />
+    <Content Include="Content\Images\iJaH9t.jpg" />
+    <Content Include="Content\Images\job.jpg" />
+    <Content Include="Content\Images\tesla.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\WebStoreAssignment - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -358,7 +374,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

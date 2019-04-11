@@ -9,12 +9,14 @@ namespace WebStoreAssignment2.Controllers
     [RequireHttps]
     public class HomeController : Controller
     {
+        [Route("")]
+        [Route("Home")]
         public ActionResult Index()
         {
             return View();
         }
 
-        [Route("About")]
+        [Route("Description")]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -22,6 +24,7 @@ namespace WebStoreAssignment2.Controllers
             return View();
         }
 
+        [Route("ContactInfo")]
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

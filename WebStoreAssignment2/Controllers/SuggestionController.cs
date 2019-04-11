@@ -13,15 +13,25 @@ namespace WebStoreAssignment2.Controllers
     [RequireHttps]
     public class SuggestionController : Controller
     {
-        private AdsContext db = new AdsContext();
+        IMockSuggestion db;
+
+        public SuggestionController()
+        {
+            this.db = new IDataSuggestion();
+        }
+
+        public SuggestionController(IMockSuggestion mockDb)
+        {
+            this.db = mockDb;
+        }
 
         // GET: Suggestion
         public ActionResult Index()
         {
             SuggestionList p1 = new SuggestionList();
-            p1. Suggestion = (db.Suggestions.ToList());
+            p1. Suggestion = (db.suggestions.ToList());
 
-            return View(p1);
+            return View("Index", p1);
         }
 
         [HttpPost]
@@ -32,19 +42,18 @@ namespace WebStoreAssignment2.Controllers
             if (ModelState.IsValid)
             {
 
-                db.Suggestions.Add(newPerson);
-                db.SaveChanges();
+                db.Save(newPerson);
                 ModelState.Clear();
                 vm = new SuggestionList()
                 {
-                    Suggestion = db.Suggestions.ToList(),
+                    Suggestion = db.suggestions.ToList(),
                 };
                 return PartialView("Index", vm);
             }
 
             vm = new SuggestionList()
             {
-                Suggestion = db.Suggestions.ToList(),
+                Suggestion = db.suggestions.ToList(),
                 newPerson = newPerson
             };
             return PartialView("Index", vm);
@@ -58,18 +67,18 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Suggestion suggestion = db.Suggestions.Find(id);
+            Suggestion suggestion = db.suggestions.SingleOrDefault(c => c.SuggestionID == id);
             if (suggestion == null)
             {
                 return HttpNotFound();
             }
-            return View(suggestion);
+            return View("Details", suggestion);
         }
 
         // GET: Suggestion/Create
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: Suggestion/Create
@@ -81,8 +90,7 @@ namespace WebStoreAssignment2.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Suggestions.Add(suggestion);
-                db.SaveChanges();
+                db.Save(suggestion);
                 return RedirectToAction("Index");
             }
 
@@ -97,12 +105,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Suggestion suggestion = db.Suggestions.Find(id);
+            Suggestion suggestion = db.suggestions.SingleOrDefault(c => c.SuggestionID == id);
             if (suggestion == null)
             {
                 return HttpNotFound();
             }
-            return View(suggestion);
+            return View("Edit", suggestion);
         }
 
         // POST: Suggestion/Edit/5
@@ -114,8 +122,7 @@ namespace WebStoreAssignment2.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(suggestion).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Save(suggestion);
                 return RedirectToAction("Index");
             }
             return View(suggestion);
@@ -129,12 +136,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Suggestion suggestion = db.Suggestions.Find(id);
+            Suggestion suggestion = db.suggestions.SingleOrDefault(c => c.SuggestionID == id);
             if (suggestion == null)
             {
                 return HttpNotFound();
             }
-            return View(suggestion);
+            return View("Delete", suggestion);
         }
 
         // POST: Suggestion/Delete/5
@@ -142,9 +149,8 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Suggestion suggestion = db.Suggestions.Find(id);
-            db.Suggestions.Remove(suggestion);
-            db.SaveChanges();
+            Suggestion suggestion = db.suggestions.SingleOrDefault(c => c.SuggestionID == id);
+            db.Delete(suggestion);
             return RedirectToAction("Index");
         }
 

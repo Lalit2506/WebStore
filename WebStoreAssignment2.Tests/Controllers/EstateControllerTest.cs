@@ -55,7 +55,7 @@ namespace WebStoreAssignment2.Tests.Controllers
         public void IndexLoadsCategories()
         {
             // act
-            
+
             var results = (List<Estate>)((ViewResult)controller.Index()).Model;
 
             // assert
@@ -66,7 +66,7 @@ namespace WebStoreAssignment2.Tests.Controllers
 
         [TestMethod]
 
-        public void Detailsnull()
+        public void Detailsright()
         {
             //arrange
 
@@ -90,6 +90,18 @@ namespace WebStoreAssignment2.Tests.Controllers
 
         }
 
+        [TestMethod]
+        public void Detailsnull()
+        {
+            //arrange
+
+            //act
+            HttpStatusCodeResult result = controller.Details(null) as HttpStatusCodeResult;
+
+            //assert
+            Assert.AreEqual(400, result.StatusCode);
+        }
+
 
 
         [TestMethod]
@@ -104,6 +116,9 @@ namespace WebStoreAssignment2.Tests.Controllers
             Assert.AreEqual("Create", result.ViewName);
         }
 
+      
+
+
         [TestMethod]
         public void Edit()
         {
@@ -115,5 +130,92 @@ namespace WebStoreAssignment2.Tests.Controllers
             //assert
             Assert.AreEqual("Edit", result.ViewName);
         }
+
+        [TestMethod]
+
+        public void EditRight()
+        {
+            //arrange
+
+            //act
+            var result = ((ViewResult)controller.Edit(1)).Model;
+
+            //assert
+            Assert.AreEqual(estates.SingleOrDefault(c => c.EstateID == 1), result);
+        }
+
+        [TestMethod]
+        public void EditWrong()
+        {
+            //arrange
+
+            //act
+            HttpNotFoundResult result = controller.Edit(7) as HttpNotFoundResult;
+
+            //assert
+            Assert.AreEqual(404, result.StatusCode);
+        }
+
+        [TestMethod]
+        public void EditNull()
+        {
+            //arrange
+
+            //act
+            HttpStatusCodeResult result = controller.Edit(null) as HttpStatusCodeResult;
+
+            //assert
+            Assert.AreEqual(400, result.StatusCode);
+        }
+
+        [TestMethod]
+        public void Delete()
+        {
+            //arrange
+
+            //act
+            ViewResult result = controller.Delete(1) as ViewResult;
+
+            //assert
+            Assert.AreEqual("Index", result.ViewName);
+
+        }
+
+        [TestMethod]
+        public void DeleteNull()
+        {
+            //arrange
+
+            //act
+            HttpStatusCodeResult result = controller.Delete(null) as HttpStatusCodeResult;
+
+            //assert
+            Assert.AreEqual(400, result.StatusCode);
+        }
+
+        [TestMethod]
+        public void DeleteWrong()
+        {
+            //arrange
+
+            //act
+            HttpNotFoundResult result = controller.Delete(4) as HttpNotFoundResult;
+
+            //assert
+            Assert.AreEqual(404, result.StatusCode);
+        }
+        [TestMethod]
+        public void Deleteconfirm()
+        {
+            //arrange
+            RedirectToRouteResult result = controller.DeleteConfirmed(1) as RedirectToRouteResult;
+
+            //act
+            var listOfResult = result.RouteValues.ToArray();
+
+            //assert
+            Assert.AreEqual("Index", listOfResult[0].Value);
+        }
+
     }
 }

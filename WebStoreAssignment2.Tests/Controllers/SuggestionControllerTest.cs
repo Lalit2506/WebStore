@@ -5,37 +5,37 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebStoreAssignment2.Controllers;
 using WebStoreAssignment2.Models;
 using Moq;
-using System.Web.Mvc;
 using System.Linq;
+using System.Web.Mvc;
 
 namespace WebStoreAssignment2.Tests.Controllers
 {
     /// <summary>
-    /// Summary description for JobsControllerTest
+    /// Summary description for SuggestionControllerTest
     /// </summary>
     [TestClass]
-    public class JobsControllerTest
+    public class SuggestionControllerTest
     {
-        JobController controller;
-        List<Jobs> jobs;
-        Mock<IMockJobs> mock;
+        SuggestionController controller;
+        List<Suggestion> suggestions;
+        Mock<IMockSuggestion> mock;
 
         [TestInitialize]
         public void TestInitialize()
         {
             // create some mock data
-            jobs = new List<Jobs>
+            suggestions = new List<Suggestion>
             {
-              new Jobs { Jobsid = 1, Jobtype = "Part time", Salary = 200, Hours = 30, Company = "georgian", location = "Toronto", Description = "ASP.NET DEVELOPER", CompanyPicture = "image.jpg"}
+              new Suggestion { SuggestionID = 1, Name = "Lalit", Comment = "Good"}
 
             };
 
             // set up & populate our mock object to inject into our controller
-            mock = new Mock<IMockJobs>();
-            mock.Setup(c => c.jobs).Returns(jobs.AsQueryable());
+            mock = new Mock<IMockSuggestion>();
+            mock.Setup(c => c.suggestions).Returns(suggestions.AsQueryable());
 
             // initialize the controller and inject the mock object
-            controller = new JobController(mock.Object);
+            controller = new SuggestionController(mock.Object);
         }
 
         [TestMethod]
@@ -55,12 +55,13 @@ namespace WebStoreAssignment2.Tests.Controllers
         public void IndexLoadsCategories()
         {
             // act
-         
-            var results = (List<Jobs>)((ViewResult)controller.Index()).Model;
+
+            var results = (List<SuggestionList>)((ViewResult)controller.Index()).Model;
 
             // assert
-            CollectionAssert.AreEqual(jobs.OrderBy(c => c.Jobsid).ToList(), results);
+            CollectionAssert.AreEqual(suggestions.OrderBy(c => c.SuggestionID).ToList(), results);
         }
+
 
 
         [TestMethod]
@@ -73,7 +74,7 @@ namespace WebStoreAssignment2.Tests.Controllers
             var result = ((ViewResult)controller.Details(1)).Model;
 
             //assert
-            Assert.AreEqual(jobs.SingleOrDefault(c => c.Jobsid == 1), result);
+            Assert.AreEqual(suggestions.SingleOrDefault(c => c.SuggestionID == 1), result);
         }
 
         [TestMethod]
@@ -140,7 +141,7 @@ namespace WebStoreAssignment2.Tests.Controllers
             var result = ((ViewResult)controller.Edit(1)).Model;
 
             //assert
-            Assert.AreEqual(jobs.SingleOrDefault(c => c.Jobsid == 1), result);
+            Assert.AreEqual(suggestions.SingleOrDefault(c => c.SuggestionID == 1), result);
         }
 
         [TestMethod]
@@ -153,18 +154,6 @@ namespace WebStoreAssignment2.Tests.Controllers
 
             //assert
             Assert.AreEqual(404, result.StatusCode);
-        }
-
-        [TestMethod]
-        public void EditNull()
-        {
-            //arrange
-
-            //act
-            HttpStatusCodeResult result = controller.Edit(null) as HttpStatusCodeResult;
-
-            //assert
-            Assert.AreEqual(400, result.StatusCode);
         }
 
         [TestMethod]
@@ -215,18 +204,5 @@ namespace WebStoreAssignment2.Tests.Controllers
             //assert
             Assert.AreEqual("Index", listOfResult[0].Value);
         }
-
-        [TestMethod]
-        public void Apply()
-        {
-            //arrange
-
-            //act
-            ViewResult result = controller.Apply(1) as ViewResult;
-
-            //assert
-            Assert.AreEqual("Apply", result.ViewName);
-        }
-
     }
 }

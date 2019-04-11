@@ -15,12 +15,22 @@ namespace WebStoreAssignment2.Controllers
     public class CarController : Controller
     {
 
-        private AdsContext db = new AdsContext();
+        IMockCar db;
+
+        public CarController()
+        {
+            this.db = new IDataCar();
+        }
+
+        public CarController(IMockCar mockDb)
+        {
+            this.db = mockDb;
+        }
         // GET: Car
 
         public ActionResult Index()
         {
-            return View(db.Cars.ToList());
+            return View("Index", db.cars.OrderBy(c => c.Carid).ToList());
         }
 
         // GET: Car/Details/5
@@ -30,7 +40,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Car car = db.Cars.Find(id);
+            Car car = db.cars.SingleOrDefault(c => c.Carid == id);
             if (car == null)
             {
                 return HttpNotFound();
@@ -40,10 +50,9 @@ namespace WebStoreAssignment2.Controllers
 
         // GET: Car/Create
         [Authorize]
-        [Route("Car/Create")]
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: Car/Create
@@ -74,8 +83,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     car.CarPhoto = Photo;
                 }
-                db.Cars.Add(car);
-                db.SaveChanges();
+                db.Save(car);
                 return RedirectToAction("Index");
             }
 
@@ -90,12 +98,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Car car = db.Cars.Find(id);
+            Car car = db.cars.SingleOrDefault(c => c.Carid == id);
             if (car == null)
             {
                 return HttpNotFound();
             }
-            return View(car);
+            return View("Edit", car);
         }
 
         // POST: Car/Edit/5
@@ -126,8 +134,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     car.CarPhoto = Photo;
                 }
-                db.Entry(car).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Save(car);
                 return RedirectToAction("Index");
             }
             return View(car);
@@ -141,12 +148,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Car car = db.Cars.Find(id);
+            Car car = db.cars.SingleOrDefault(c => c.Carid == id);
             if (car == null)
             {
                 return HttpNotFound();
             }
-            return View(car);
+            return View("Delete", car);
         }
 
         // POST: Car/Delete/5
@@ -154,9 +161,8 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Car car = db.Cars.Find(id);
-            db.Cars.Remove(car);
-            db.SaveChanges();
+            Car car = db.cars.SingleOrDefault(c => c.Carid == id);
+            db.Delete(car);
             return RedirectToAction("Index");
         }
 
@@ -169,10 +175,10 @@ namespace WebStoreAssignment2.Controllers
             base.Dispose(disposing);
         }
         [Authorize]
-        public ActionResult Buy(int id)
+        public ActionResult Buy(int? id)
         {
-            var car = (from a in db.Cars where a.Carid == id select a).SingleOrDefault();
-            return View(car);
+            var car = (from a in db.cars where a.Carid == id select a).SingleOrDefault();
+            return View("Buy", car);
         }
     }
 }

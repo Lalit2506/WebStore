@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Http;
 
-namespace WebStoreAssignment2.App_Start
+namespace WebStoreAssignment2
 {
-    public class WebApiConfig
+    public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
         {
@@ -17,7 +16,6 @@ namespace WebStoreAssignment2.App_Start
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-            //config.Filters.Add(new BasicAuthentication());
         }
     }
 }

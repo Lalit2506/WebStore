@@ -14,12 +14,22 @@ namespace WebStoreAssignment2.Controllers
     [RequireHttps]
     public class ElectronicController : Controller
     {
-        private AdsContext db = new AdsContext();
+        IMockElectronic db;
+
+        public ElectronicController()
+        {
+            this.db = new IDataElectronic();
+        }
+
+        public ElectronicController(IMockElectronic mockDb)
+        {
+            this.db = mockDb;
+        }
 
         // GET: Electronic
         public ActionResult Index()
         {
-            return View(db.Electronics.ToList());
+            return View("Index", db.electronics.OrderBy(c => c.Electronicsid).ToList());
         }
 
         // GET: Electronic/Details/5
@@ -29,7 +39,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Electronics electronics = db.Electronics.Find(id);
+            Electronics electronics = db.electronics.SingleOrDefault(c => c.Electronicsid == id);
             if (electronics == null)
             {
                 return HttpNotFound();
@@ -41,7 +51,7 @@ namespace WebStoreAssignment2.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: Electronic/Create
@@ -72,8 +82,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     electronics.electronicPicture = Picture;
                 }
-                db.Electronics.Add(electronics);
-                db.SaveChanges();
+                db.Save(electronics);
                 return RedirectToAction("Index");
             }
 
@@ -88,12 +97,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Electronics electronics = db.Electronics.Find(id);
+            Electronics electronics = db.electronics.SingleOrDefault(c => c.Electronicsid == id);
             if (electronics == null)
             {
                 return HttpNotFound();
             }
-            return View(electronics);
+            return View("Edit", electronics);
         }
 
         // POST: Electronic/Edit/5
@@ -115,7 +124,7 @@ namespace WebStoreAssignment2.Controllers
                         string fName = Path.GetFileName(file.FileName);
 
                         string path = Server.MapPath("~/Content/Images/" + fName);
-                        file.SaveAs(path);
+                        file.SaveAs(path); 
                         electronics.electronicPicture = fName;
                     }
                 }
@@ -124,8 +133,7 @@ namespace WebStoreAssignment2.Controllers
                     // This is to keep the old file if there is no new photo
                     electronics.electronicPicture = Picture;
                 }
-                db.Entry(electronics).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Save(electronics);
                 return RedirectToAction("Index");
             }
             return View(electronics);
@@ -139,12 +147,12 @@ namespace WebStoreAssignment2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Electronics electronics = db.Electronics.Find(id);
+            Electronics electronics = db.electronics.SingleOrDefault(c => c.Electronicsid == id);
             if (electronics == null)
             {
                 return HttpNotFound();
             }
-            return View(electronics);
+            return View("Delete", electronics);
         }
 
         // POST: Electronic/Delete/5
@@ -152,9 +160,8 @@ namespace WebStoreAssignment2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Electronics electronics = db.Electronics.Find(id);
-            db.Electronics.Remove(electronics);
-            db.SaveChanges();
+            Electronics electronics = db.electronics.SingleOrDefault(c => c.Electronicsid == id);
+            db.Delete(electronics);
             return RedirectToAction("Index");
         }
 
@@ -167,10 +174,10 @@ namespace WebStoreAssignment2.Controllers
             base.Dispose(disposing);
         }
         [Authorize]
-        public ActionResult Buy(int id)
+        public ActionResult Buy(int? id)
         {
-            var elec = (from a in db.Electronics where a.Electronicsid == id select a).SingleOrDefault();
-            return View(elec);
+            var elec = (from a in db.electronics where a.Electronicsid == id select a).SingleOrDefault();
+            return View("Buy", elec);
         }
     }
 }

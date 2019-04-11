@@ -17,14 +17,17 @@ namespace WebStoreAssignment2.Controllers
     {
         IMockEstate db;
 
+        public EstateController()
+        {
+            this.db = new IDataEstate();
+        }
 
 
         public EstateController(IMockEstate mockDb)
         {
             this.db = mockDb;
         }
-
-        [Route("Estate/See")]
+       
         // GET: Estate
         public ActionResult Index()
         {
@@ -151,7 +154,7 @@ namespace WebStoreAssignment2.Controllers
             {
                 return HttpNotFound();
             }
-            return View(estate);
+            return View("Index", estate);
         }
 
         // POST: Estate/Delete/5
