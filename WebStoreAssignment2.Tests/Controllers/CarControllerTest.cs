@@ -11,31 +11,31 @@ using System.Web.Mvc;
 namespace WebStoreAssignment2.Tests.Controllers
 {
     /// <summary>
-    /// Summary description for EstateControlleTest
+    /// Summary description for CarControllerTest
     /// </summary>
     [TestClass]
-    public class EstateControllerTest
+    public class CarControllerTest
     {
-        EstateController controller;
-        List<Estate> estates;
-        Mock<IMockEstate> mock;
+        CarController controller;
+        List<Car> cars;
+        Mock<IMockCar> mock;
 
         [TestInitialize]
         public void TestInitialize()
         {
             // create some mock data
-            estates = new List<Estate>
+            cars = new List<Car>
             {
-              new Estate { EstateID = 1, Type = "House Rental", Price = 200, Address = "326 Grove", location = "Barrie" ,Description = "Good" ,EstatePhoto = "image.jpg"}
+              new Car { Carid = 1, Cartype = "Sedan", Price = 2000, Make = "GMC", Model = "Sunny" ,Condition = "Good",year = 2000, CarPhoto = "image.jpg"}
 
             };
 
             // set up & populate our mock object to inject into our controller
-            mock = new Mock<IMockEstate>();
-            mock.Setup(c => c.estates).Returns(estates.AsQueryable());
+            mock = new Mock<IMockCar>();
+            mock.Setup(c => c.cars).Returns(cars.AsQueryable());
 
             // initialize the controller and inject the mock object
-            controller = new EstateController(mock.Object);
+            controller = new CarController(mock.Object);
         }
 
         [TestMethod]
@@ -56,10 +56,10 @@ namespace WebStoreAssignment2.Tests.Controllers
         {
             // act
 
-            var results = (List<Estate>)((ViewResult)controller.Index()).Model;
+            var results = (List<Car>)((ViewResult)controller.Index()).Model;
 
             // assert
-            CollectionAssert.AreEqual(estates.OrderBy(c => c.EstateID).ToList(), results);
+            CollectionAssert.AreEqual(cars.OrderBy(c => c.Carid).ToList(), results);
         }
 
 
@@ -74,7 +74,7 @@ namespace WebStoreAssignment2.Tests.Controllers
             var result = ((ViewResult)controller.Details(1)).Model;
 
             //assert
-            Assert.AreEqual(estates.SingleOrDefault(c => c.EstateID == 1), result);
+            Assert.AreEqual(cars.SingleOrDefault(c => c.Carid == 1), result);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace WebStoreAssignment2.Tests.Controllers
             Assert.AreEqual("Create", result.ViewName);
         }
 
-      
+
 
 
         [TestMethod]
@@ -141,7 +141,7 @@ namespace WebStoreAssignment2.Tests.Controllers
             var result = ((ViewResult)controller.Edit(1)).Model;
 
             //assert
-            Assert.AreEqual(estates.SingleOrDefault(c => c.EstateID == 1), result);
+            Assert.AreEqual(cars.SingleOrDefault(c => c.Carid == 1), result);
         }
 
         [TestMethod]
@@ -177,7 +177,7 @@ namespace WebStoreAssignment2.Tests.Controllers
             ViewResult result = controller.Delete(1) as ViewResult;
 
             //assert
-            Assert.AreEqual("Index", result.ViewName);
+            Assert.AreEqual("Delete", result.ViewName);
 
         }
 
@@ -217,5 +217,18 @@ namespace WebStoreAssignment2.Tests.Controllers
             Assert.AreEqual("Index", listOfResult[0].Value);
         }
 
+
+        [TestMethod]
+        public void Buy()
+        {
+            //arrange
+
+            //act
+            ViewResult result = controller.Buy(1) as ViewResult;
+
+            //assert
+            Assert.AreEqual("Buy", result.ViewName);
+
+        }
     }
 }
